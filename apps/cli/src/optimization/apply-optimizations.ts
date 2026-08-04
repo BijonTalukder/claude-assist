@@ -1,6 +1,7 @@
-import { writeFileSync } from 'node:fs';
-import { join } from 'node:path';
-import type { OptimizationPlan } from './types.js';
+import { existsSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import type { OptimizationPlan } from "./types.js";
+import { generateProjectContext } from "./project-context-generator.js";
 
 const MAX_CHANGED_FILES_FOR_FOCUS = 30;
 
@@ -17,10 +18,18 @@ export function applyOptimizations(plan: OptimizationPlan): ApplyResult {
   let claudeignoreWritten = false;
 
   if (plan.claudeIgnoreContent && !plan.hasClaudeIgnore) {
-    writeFileSync(join(plan.rootPath, '.claudeignore'), plan.claudeIgnoreContent, 'utf8');
+    writeFileSync(
+      join(plan.rootPath, ".claudeignore"),
+      plan.claudeIgnoreContent,
+      "utf8",
+    );
     claudeignoreWritten = true;
   }
-
+  const contextContent = generateProjectContext(plan);
+  const claudeMdPath = join(plan.rootPath, "CLAUDE.md");
+  if (!existsSync(claudeMdPath)) {
+    writeFileSync(claudeMdPath, contextContent, "utf8");
+  }
   return { claudeignoreWritten };
 }
 
@@ -48,12 +57,17 @@ export interface LaunchBuildResult {
  * modified — only the context handed to Claude.
  */
 export function buildLaunchContext(input: LaunchBuildInput): LaunchBuildResult {
-  const changed = input.useChangedFiles ? input.changedFilePaths.slice(0, MAX_CHANGED_FILES_FOR_FOCUS) : [];
+  const changed = input.useChangedFiles
+    ? input.changedFilePaths.slice(0, MAX_CHANGED_FILES_FOR_FOCUS)
+    : [];
 
   return {
     args: [...changed, ...input.claudeArgs],
     cwd: input.rootPath,
     systemPrompt: input.focusPrompt ?? null,
-    focusMessage: changed.length > 0 ? `Seeding Claude with ${changed.length} changed file(s).` : null,
+    focusMessage:
+      changed.length > 0
+        ? `Seeding Claude with ${changed.length} changed file(s).`
+        : null,
   };
 }
