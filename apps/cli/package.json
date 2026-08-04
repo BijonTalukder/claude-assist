@@ -1,0 +1,34 @@
+{
+  "name": "claude-assist",
+  "version": "0.1.0",
+  "description": "Analyzes your project and launches Claude Code with a useful pre-flight summary.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "claude-assist": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "postbuild": "chmod +x dist/index.js",
+    "dev": "tsc -w -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@claude-assist/types": "workspace:*",
+    "@claude-assist/core": "workspace:*",
+    "@claude-assist/dashboard": "workspace:*",
+    "@inquirer/prompts": "^7.2.1",
+    "commander": "^12.1.0",
+    "execa": "^9.3.1",
+    "ora": "^8.1.0",
+    "picocolors": "^1.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "typescript": "^5.5.4"
+  }
+}

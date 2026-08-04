@@ -1,0 +1,22 @@
+{
+  "name": "claude-assist-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Monorepo for Claude Assist — a pre-flight project analyzer for Claude Code.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@9.7.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "turbo": "^2.1.0",
+    "typescript": "^5.5.4"
+  }
+}
