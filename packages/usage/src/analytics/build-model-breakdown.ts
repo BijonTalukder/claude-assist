@@ -1,8 +1,10 @@
+import type { ModelFamily } from '../models/model-catalog.js';
 import type { ModelUsageBreakdown } from '../types/analytics.js';
 import type { ResolvedTurn } from './resolved-turn.js';
 import { resolveModel } from '../models/model-catalog.js';
 
 interface MutableModelStats {
+  family: ModelFamily;
   displayName: string;
   totalTokens: number;
   totalCostUsd: number;
@@ -10,22 +12,25 @@ interface MutableModelStats {
 }
 
 export function buildModelBreakdown(turns: ResolvedTurn[]): ModelUsageBreakdown[] {
-  const statsByFamily = new Map<string, MutableModelStats>();
+  const statsByModelId = new Map<string, MutableModelStats>();
 
   for (const turn of turns) {
     const { family, displayName } = resolveModel(turn.model);
-    const stats = statsByFamily.get(family) ?? { displayName, totalTokens: 0, totalCostUsd: 0, sessionIds: new Set() };
+    const stats =
+      statsByModelId.get(turn.model) ??
+      ({ family, displayName, totalTokens: 0, totalCostUsd: 0, sessionIds: new Set() } as MutableModelStats);
     stats.totalTokens += turn.totalTokens;
     stats.totalCostUsd += turn.costUsd;
     stats.sessionIds.add(turn.sessionId);
-    statsByFamily.set(family, stats);
+    statsByModelId.set(turn.model, stats);
   }
 
-  const grandTotalTokens = Array.from(statsByFamily.values()).reduce((sum, s) => sum + s.totalTokens, 0);
+  const grandTotalTokens = Array.from(statsByModelId.values()).reduce((sum, s) => sum + s.totalTokens, 0);
 
-  return Array.from(statsByFamily.entries())
-    .map(([family, stats]) => ({
-      model: family,
+  return Array.from(statsByModelId.entries())
+    .map(([model, stats]) => ({
+      model,
+      family: stats.family,
       displayName: stats.displayName,
       totalTokens: stats.totalTokens,
       totalCostUsd: stats.totalCostUsd,

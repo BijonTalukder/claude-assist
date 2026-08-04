@@ -3,6 +3,7 @@ export type {
   InsightSeverity,
   ModelUsageBreakdown,
   ProjectUsageBreakdown,
+  RangeOption,
   SessionSummaryRow,
   TrendPoint,
   UsageSummary,

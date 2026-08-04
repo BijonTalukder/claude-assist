@@ -8,7 +8,7 @@ export interface ModelShareMeterProps {
 
 /** Meter contract: fill carries identity, unfilled track is the muted surface — matches the "Claude Sonnet 82%" example. */
 export function ModelShareMeter({ model }: ModelShareMeterProps) {
-  const color = MODEL_FAMILY_COLORS[model.model] ?? MODEL_FAMILY_COLORS.unknown;
+  const color = MODEL_FAMILY_COLORS[model.family] ?? MODEL_FAMILY_COLORS.unknown;
 
   return (
     <div className="flex flex-col gap-2">

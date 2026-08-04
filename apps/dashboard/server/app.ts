@@ -1,11 +1,15 @@
 import express, { type Express, type NextFunction, type Request, type Response } from 'express';
 import { existsSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { join } from 'node:path';
 import { createUsageRouter } from './routes/usage-routes.js';
 import { UsageAnalyticsService } from './usage-analytics-service.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+// This server is bundled to CJS and run standalone via `node`, where `__dirname` is a
+// runtime global pointing at the compiled file's directory (e.g.
+// .../assets/dashboard/server). The `typeof` guard keeps this source runnable as ESM
+// during dev (tsx), where the CJS globals don't exist and the static-client branch
+// below is skipped anyway.
+const currentDir: string = typeof __dirname === 'string' ? __dirname : process.cwd();
 
 export function createApp(): Express {
   const app = express();
@@ -22,7 +26,7 @@ export function createApp(): Express {
   // In production `pnpm build` puts the built client next to this compiled server file
   // (dist/client vs dist/server) — serve it if present. In dev, Vite serves the client
   // itself and proxies /api here instead, so this branch is simply skipped.
-  const clientDistDir = join(__dirname, '..', 'client');
+  const clientDistDir = join(currentDir, '..', 'client');
   if (existsSync(clientDistDir)) {
     app.use(express.static(clientDistDir));
     app.get('*', (_req, res) => {

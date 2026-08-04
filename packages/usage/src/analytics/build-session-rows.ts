@@ -18,11 +18,17 @@ export function buildSessionRows(sessions: SessionRecord[], turns: ResolvedTurn[
     const tokensByModel = new Map<string, number>();
     let inputTokens = 0;
     let outputTokens = 0;
+    let cacheReadTokens = 0;
+    let cacheCreationTokens = 0;
+    let totalTokens = 0;
     let totalCostUsd = 0;
 
     for (const turn of sessionTurns) {
       inputTokens += turn.tokens.input;
       outputTokens += turn.tokens.output;
+      cacheReadTokens += turn.tokens.cacheRead;
+      cacheCreationTokens += turn.tokens.cacheCreation;
+      totalTokens += turn.totalTokens;
       totalCostUsd += turn.costUsd;
       tokensByModel.set(turn.model, (tokensByModel.get(turn.model) ?? 0) + turn.totalTokens);
     }
@@ -39,6 +45,9 @@ export function buildSessionRows(sessions: SessionRecord[], turns: ResolvedTurn[
       primaryModelDisplayName: resolveModel(primaryModel).displayName,
       inputTokens,
       outputTokens,
+      cacheReadTokens,
+      cacheCreationTokens,
+      totalTokens,
       totalCostUsd,
       title: session.title,
     };

@@ -13,6 +13,13 @@ const LANGUAGE_LABELS: Record<Language, string> = {
   typescript: 'TypeScript',
   javascript: 'JavaScript',
   dart: 'Dart',
+  python: 'Python',
+  java: 'Java',
+  csharp: 'C#',
+  go: 'Go',
+  ruby: 'Ruby',
+  php: 'PHP',
+  rust: 'Rust',
   unknown: 'Unknown',
 };
 

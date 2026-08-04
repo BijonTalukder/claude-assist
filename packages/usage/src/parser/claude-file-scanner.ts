@@ -11,7 +11,9 @@ export interface DiscoveredClaudeFile {
 
 // Marketplace/plugin clones, caches, logs, and UI scratch dirs live under ~/.claude too —
 // none of it is usage data, and some of it (plugins/) is large enough to make an
-// unbounded recursive scan slow for no benefit.
+// unbounded recursive scan slow for no benefit. The metadata dirs (todos/, settings/,
+// project-states/) hold JSON state that is not session usage — skipping them keeps
+// their `.json` files from being misread as usage sessions.
 const IGNORED_DIR_NAMES = new Set([
   'node_modules',
   'cache',
@@ -29,6 +31,9 @@ const IGNORED_DIR_NAMES = new Set([
   'paste-cache',
   'session-env',
   'backups',
+  'todos',
+  'settings',
+  'project-states',
 ]);
 
 const DEFAULT_MAX_DEPTH = 6;

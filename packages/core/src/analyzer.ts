@@ -1,11 +1,12 @@
-import type { AnalysisResult, ModelRecommender, SuggestionProvider } from '@claude-assist/types';
+import type { AnalysisResult, ModelRecommender } from '@claude-assist/types';
 import { ProjectScanner } from '@claude-assist/scanner';
 import { GitInfoProvider } from '@claude-assist/git';
 import {
   ContextEstimator,
   DefaultModelRecommender,
-  DefaultSuggestionProvider,
+  FocusDetector,
   SuggestionEngine,
+  type SuggestionProvider,
 } from '@claude-assist/models';
 
 export interface ClaudeAssistAnalyzerDeps {
@@ -15,6 +16,13 @@ export interface ClaudeAssistAnalyzerDeps {
   modelRecommender?: ModelRecommender;
   /** Extension point: add providers here for future suggestion sources. */
   suggestionProviders?: SuggestionProvider[];
+  /** Detects the launch focus area. Defaults to the standard detector. */
+  focusDetector?: FocusDetector;
+}
+
+export interface AnalyzeOptions {
+  /** Explicit user-selected scope (app/package/module) — highest focus priority. */
+  userSelection?: string;
 }
 
 /**
@@ -28,16 +36,18 @@ export class ClaudeAssistAnalyzer {
   private readonly contextEstimator: ContextEstimator;
   private readonly modelRecommender: ModelRecommender;
   private readonly suggestionEngine: SuggestionEngine;
+  private readonly focusDetector: FocusDetector;
 
   constructor(deps: ClaudeAssistAnalyzerDeps = {}) {
     this.scanner = deps.scanner ?? new ProjectScanner();
     this.gitInfoProvider = deps.gitInfoProvider ?? new GitInfoProvider();
     this.contextEstimator = deps.contextEstimator ?? new ContextEstimator();
     this.modelRecommender = deps.modelRecommender ?? new DefaultModelRecommender();
-    this.suggestionEngine = new SuggestionEngine(deps.suggestionProviders ?? [new DefaultSuggestionProvider()]);
+    this.suggestionEngine = new SuggestionEngine({ providers: deps.suggestionProviders });
+    this.focusDetector = deps.focusDetector ?? new FocusDetector();
   }
 
-  async analyze(rootPath: string): Promise<AnalysisResult> {
+  async analyze(rootPath: string, options: AnalyzeOptions = {}): Promise<AnalysisResult> {
     const [{ project, stats }, git] = await Promise.all([
       this.scanner.scan(rootPath),
       this.gitInfoProvider.getInfo(rootPath),
@@ -48,7 +58,8 @@ export class ClaudeAssistAnalyzer {
 
     const modelRecommendation = this.modelRecommender.recommend(recommendationInput);
     const suggestions = this.suggestionEngine.collect(recommendationInput);
+    const focus = this.focusDetector.detect(recommendationInput, { userSelection: options.userSelection });
 
-    return { project, stats, git, contextEstimate, modelRecommendation, suggestions };
+    return { project, stats, git, contextEstimate, modelRecommendation, suggestions, focus };
   }
 }

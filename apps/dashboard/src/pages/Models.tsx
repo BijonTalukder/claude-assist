@@ -5,14 +5,17 @@ import { ModelShareMeter } from '../components/ModelShareMeter';
 import { LastUpdated } from '../components/LastUpdated';
 import { ErrorBanner } from '../components/ErrorBanner';
 import { MockDataBanner } from '../components/MockDataBanner';
+import { ClaudeNotDetected } from '../components/ClaudeNotDetected';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
 import { EmptyState } from '../components/EmptyState';
 import { useUsageAnalytics } from '../hooks/useUsageAnalytics';
 import { analyticsApi } from '../services/analytics-api';
+import { useRangeFilter } from '../components/RangeFilter';
 
 export function Models() {
-  const fetcher = useCallback(() => analyticsApi.getModels(), []);
+  const range = useRangeFilter();
+  const fetcher = useCallback(() => analyticsApi.getModels(range), [range]);
   const { data, error, isLoading, lastUpdated } = useUsageAnalytics(fetcher);
 
   return (
@@ -26,6 +29,8 @@ export function Models() {
             <Skeleton className="h-64" />
             <Skeleton className="h-64" />
           </div>
+        ) : data.claudeInstalled === false ? (
+          <ClaudeNotDetected />
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <ModelChart models={data.models} />

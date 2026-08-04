@@ -4,13 +4,16 @@ import { SessionsTable } from '../components/SessionsTable';
 import { LastUpdated } from '../components/LastUpdated';
 import { ErrorBanner } from '../components/ErrorBanner';
 import { MockDataBanner } from '../components/MockDataBanner';
+import { ClaudeNotDetected } from '../components/ClaudeNotDetected';
 import { Card, CardContent } from '../components/ui/card';
 import { Skeleton } from '../components/ui/skeleton';
 import { useUsageAnalytics } from '../hooks/useUsageAnalytics';
 import { analyticsApi } from '../services/analytics-api';
+import { useRangeFilter } from '../components/RangeFilter';
 
 export function Sessions() {
-  const fetcher = useCallback(() => analyticsApi.getSessions(), []);
+  const range = useRangeFilter();
+  const fetcher = useCallback(() => analyticsApi.getSessions(range), [range]);
   const { data, error, isLoading, lastUpdated } = useUsageAnalytics(fetcher);
 
   return (
@@ -19,9 +22,21 @@ export function Sessions() {
         {error && <ErrorBanner message={error.message} />}
         {data?.isMockData && <MockDataBanner />}
 
-        <Card>
-          <CardContent>{!data ? <Skeleton className="h-64" /> : <SessionsTable sessions={data.sessions} />}</CardContent>
-        </Card>
+        {!data ? (
+          <Card>
+            <CardContent>
+              <Skeleton className="h-64" />
+            </CardContent>
+          </Card>
+        ) : data.claudeInstalled === false ? (
+          <ClaudeNotDetected />
+        ) : (
+          <Card>
+            <CardContent>
+              <SessionsTable sessions={data.sessions} />
+            </CardContent>
+          </Card>
+        )}
       </div>
     </AppLayout>
   );

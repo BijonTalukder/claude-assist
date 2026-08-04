@@ -4,7 +4,18 @@
 
 export type Framework = 'nestjs' | 'express' | 'nextjs' | 'react' | 'flutter' | 'unknown';
 
-export type Language = 'typescript' | 'javascript' | 'dart' | 'unknown';
+export type Language =
+  | 'typescript'
+  | 'javascript'
+  | 'dart'
+  | 'python'
+  | 'java'
+  | 'csharp'
+  | 'go'
+  | 'ruby'
+  | 'php'
+  | 'rust'
+  | 'unknown';
 
 export type PackageManager = 'pnpm' | 'yarn' | 'npm' | 'bun' | 'unknown';
 
@@ -40,6 +51,10 @@ export interface GitInfo {
   branch: string | null;
   changedFiles: number;
   untrackedFiles: number;
+  /** Number of files staged for commit. */
+  stagedFiles: number;
+  /** Relative paths of tracked files with uncommitted changes (staged or working-tree). */
+  changedFilePaths: string[];
 }
 
 export interface ContextEstimate {
@@ -66,6 +81,35 @@ export interface AnalysisResult {
   contextEstimate: ContextEstimate;
   modelRecommendation: ModelRecommendation;
   suggestions: Suggestion[];
+  /** Where Claude's attention should be directed when it launches. */
+  focus: FocusArea;
+}
+
+// ---------------------------------------------------------------------------
+// Focus detection
+// ---------------------------------------------------------------------------
+
+export type FocusSource = 'user' | 'cwd' | 'git' | 'workspace' | 'none';
+
+export type FocusConfidence = 'high' | 'medium' | 'low';
+
+/**
+ * Where Claude's attention should be directed when it launches. Derived from
+ * factual project metadata only (working directory, git changes, workspace
+ * layout) — names are never guessed from conventions.
+ */
+export interface FocusArea {
+  /** Which evidence produced the `recommendedScope`. */
+  source: FocusSource;
+  /** The working directory Claude runs in. */
+  workingDirectory?: string;
+  /** Current workspace/package name when cwd sits inside a monorepo package. */
+  package?: string;
+  /** Directories with uncommitted changes, most-changed first (relative paths). */
+  changedDirectories: string[];
+  /** Human-readable sentence telling Claude what to focus on. */
+  recommendedScope: string;
+  confidence: FocusConfidence;
 }
 
 // ---------------------------------------------------------------------------

@@ -30,7 +30,7 @@ export class UsageSessionRepository {
     for (const file of files) {
       try {
         const outcome = await this.parser.parse(file.filePath, file.projectDirName, file.sessionId);
-        sessions.push(outcome.session);
+        if (outcome.session) sessions.push(outcome.session);
         warnings.push(...outcome.warnings);
       } catch (error) {
         warnings.push({

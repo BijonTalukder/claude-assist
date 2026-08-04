@@ -21,8 +21,10 @@ export function SessionsTable({ sessions }: SessionsTableProps) {
           <TableHead>Date</TableHead>
           <TableHead>Project</TableHead>
           <TableHead>Model</TableHead>
-          <TableHead>Input tokens</TableHead>
-          <TableHead>Output tokens</TableHead>
+          <TableHead>Input</TableHead>
+          <TableHead>Output</TableHead>
+          <TableHead>Cache</TableHead>
+          <TableHead>Total tokens</TableHead>
           <TableHead>Cost</TableHead>
         </TableRow>
       </TableHeader>
@@ -37,6 +39,8 @@ export function SessionsTable({ sessions }: SessionsTableProps) {
             <TableCell>{session.primaryModelDisplayName}</TableCell>
             <TableCell>{formatCompactNumber(session.inputTokens)}</TableCell>
             <TableCell>{formatCompactNumber(session.outputTokens)}</TableCell>
+            <TableCell>{formatCompactNumber(session.cacheReadTokens + session.cacheCreationTokens)}</TableCell>
+            <TableCell className="text-ink-secondary">{formatCompactNumber(session.totalTokens)}</TableCell>
             <TableCell>{formatUsd(session.totalCostUsd)}</TableCell>
           </TableRow>
         ))}

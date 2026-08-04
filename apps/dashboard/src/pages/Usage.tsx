@@ -4,13 +4,16 @@ import { UsageChart } from '../components/UsageChart';
 import { LastUpdated } from '../components/LastUpdated';
 import { ErrorBanner } from '../components/ErrorBanner';
 import { MockDataBanner } from '../components/MockDataBanner';
+import { ClaudeNotDetected } from '../components/ClaudeNotDetected';
 import { Skeleton } from '../components/ui/skeleton';
 import { useUsageAnalytics } from '../hooks/useUsageAnalytics';
 import { analyticsApi } from '../services/analytics-api';
+import { useRangeFilter } from '../components/RangeFilter';
 import { formatCompactNumber, formatUsd } from '../lib/utils';
 
 export function Usage() {
-  const fetcher = useCallback(() => analyticsApi.getTrends(), []);
+  const range = useRangeFilter();
+  const fetcher = useCallback(() => analyticsApi.getTrends(range), [range]);
   const { data, error, isLoading, lastUpdated } = useUsageAnalytics(fetcher);
 
   return (
@@ -25,6 +28,8 @@ export function Usage() {
               <Skeleton key={i} className="h-64" />
             ))}
           </div>
+        ) : data.claudeInstalled === false ? (
+          <ClaudeNotDetected />
         ) : (
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <UsageChart

@@ -1,6 +1,6 @@
 import type { UsageTokens } from '../types/index.js';
 import { resolveModel, type ModelFamily } from '../models/model-catalog.js';
-import { PRICING_TABLE, type ModelPricing } from './pricing-table.js';
+import { PRICING_TABLE, resolvePricing, type ModelPricing } from './pricing-table.js';
 
 const TOKENS_PER_MILLION = 1_000_000;
 
@@ -15,7 +15,7 @@ export function calculateCostUsd(tokens: UsageTokens, pricing: ModelPricing): nu
 
 export function calculateCostForModel(modelId: string, tokens: UsageTokens): number {
   const { family } = resolveModel(modelId);
-  return calculateCostUsd(tokens, PRICING_TABLE[family]);
+  return calculateCostUsd(tokens, resolvePricing(modelId, family));
 }
 
 /** Cost `tokens` would have cost under a different model family — used by the Haiku-savings insight. */

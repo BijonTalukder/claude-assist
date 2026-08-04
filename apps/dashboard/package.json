@@ -11,13 +11,12 @@
     "dev:client": "vite",
     "build": "pnpm build:client && pnpm build:server",
     "build:client": "vite build",
-    "build:server": "tsc -p tsconfig.server.json",
-    "start": "node dist/server/index.js",
+    "build:server": "tsup",
+    "start": "node dist/server/index.cjs",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.server.json",
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@claude-assist/usage": "workspace:*",
     "clsx": "^2.1.1",
     "express": "^4.21.2",
     "lucide-react": "^0.468.0",
@@ -28,6 +27,7 @@
     "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
+    "@claude-assist/usage": "workspace:*",
     "@types/express": "^4.17.21",
     "@types/node": "^22.20.1",
     "@types/react": "^18.3.12",
@@ -37,6 +37,7 @@
     "concurrently": "^9.1.0",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.15",
+    "tsup": "^8.3.0",
     "tsx": "^4.19.2",
     "typescript": "^5.5.4",
     "vite": "^6.0.3"

@@ -105,17 +105,24 @@ verified against this project's real files, not assumed) and computes:
 - **Tokens** — read directly from each `assistant` turn's usage block.
 - **Cost** — Claude Code's session files never include a cost figure, and this machine's own
   model-pricing cache (`~/.claude.json` → `additionalModelCostsCache`) was empty, so there's no
-  local source of truth to read it from. Cost is computed from a static, hardcoded pricing
-  table (`packages/usage/src/pricing/pricing-table.ts`) — update that file if pricing changes.
+  local source of truth to read it from. Cost is computed from a per-model pricing map
+  (`MODEL_PRICING_ENTRIES` in `packages/usage/src/pricing/pricing-table.ts`), keyed by exact
+  model id — each turn's `input_tokens`, `output_tokens`, `cache_creation_input_tokens` and
+  `cache_read_input_tokens` are multiplied by that model's rates. Unmapped ids fall back to a
+  family tier; update that file if pricing changes.
 - **Insights** — plain rule-based checks over the computed aggregates (dominant model, dominant
   project, a Haiku cost-savings estimate, a large-session flag). No AI model is ever called.
 
 ## Mock data
 
-A fresh machine with no Claude Code history yet would otherwise show a blank dashboard. Instead,
-`UsageAnalyticsService` falls back to `generateMockSessions()` (`@claude-assist/usage`) —
-clearly flagged via `isMockData: true` in every response, and surfaced in the UI as a banner. It
-is never blended with real data.
+A fresh machine with no Claude Code history yet would otherwise show a blank dashboard. When
+Claude Code *is installed* but has no history, `UsageAnalyticsService` falls back to
+`generateMockSessions()` (`@claude-assist/usage`) — clearly flagged via `isMockData: true` in
+every response, and surfaced in the UI as a banner. It is never blended with real data.
+
+When Claude Code is *not installed at all*, no sample data is fabricated: every response reports
+`claudeInstalled: false`, and the UI shows a "Claude Code not detected" panel with an install
+link instead of charts.
 
 ## Auto-refresh
 

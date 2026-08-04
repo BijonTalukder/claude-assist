@@ -1,34 +1,73 @@
 {
   "name": "claude-assist",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "description": "Analyzes your project and launches Claude Code with a useful pre-flight summary.",
+  "keywords": [
+    "claude",
+    "claude-code",
+    "claude-assist",
+    "ai",
+    "ai-cli",
+    "developer-tools",
+    "developer-productivity",
+    "typescript",
+    "nodejs",
+    "cli",
+    "command-line",
+    "code-analysis",
+    "project-analysis",
+    "static-analysis",
+    "context-analysis",
+    "context-optimization",
+    "token-optimization",
+    "llm",
+    "prompt-engineering",
+    "ai-coding",
+    "coding-assistant",
+    "developer-assistant",
+    "code-quality",
+    "software-development",
+    "automation",
+    "open-source"
+  ],
   "license": "MIT",
   "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
   "bin": {
     "claude-assist": "./dist/index.js"
   },
+  "preferGlobal": true,
   "files": [
-    "dist"
+    "dist",
+    "assets"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "pnpm run clean && pnpm --filter @claude-assist/types build && pnpm --filter @claude-assist/scanner build && pnpm --filter @claude-assist/git build && pnpm --filter @claude-assist/models build && pnpm --filter @claude-assist/core build && pnpm --filter @claude-assist/usage build && pnpm --filter @claude-assist/dashboard build && node ./scripts/copy-dashboard-assets.mjs && tsup",
     "postbuild": "chmod +x dist/index.js",
     "dev": "tsc -w -p tsconfig.json",
     "typecheck": "tsc --noEmit -p tsconfig.json",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist assets/dashboard",
+    "prepack": "pnpm run build"
   },
   "dependencies": {
-    "@claude-assist/types": "workspace:*",
-    "@claude-assist/core": "workspace:*",
-    "@claude-assist/dashboard": "workspace:*",
     "@inquirer/prompts": "^7.2.1",
     "commander": "^12.1.0",
     "execa": "^9.3.1",
+    "express": "^4.21.2",
+    "fast-glob": "^3.3.2",
     "ora": "^8.1.0",
-    "picocolors": "^1.0.1"
+    "picocolors": "^1.0.1",
+    "simple-git": "^3.25.0"
   },
   "devDependencies": {
+    "@claude-assist/core": "workspace:*",
+    "@claude-assist/models": "workspace:*",
+    "@claude-assist/types": "workspace:*",
     "@types/node": "^22.5.0",
+    "tsup": "^8.3.0",
     "typescript": "^5.5.4"
   }
 }

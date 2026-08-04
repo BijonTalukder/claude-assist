@@ -59,7 +59,15 @@ function findMostActiveProject(turns: ResolvedTurn[]): string | null {
   return best;
 }
 
-export function buildSummary(turns: ResolvedTurn[], totalSessions: number, now: Date): UsageSummary {
+export function buildSummary(turns: ResolvedTurn[], now: Date): UsageSummary {
+  // Derived from distinct session IDs on the resolved turns — NOT from the raw session
+  // file count. A resumed/compacted conversation can span more than one session file
+  // while keeping the same session ID, and a file with no assistant turns contributes
+  // nothing to any other total. Counting files instead of distinct sessions here was
+  // producing a "Total sessions" figure that didn't match the sessionCount totals
+  // (which are all Set-of-sessionId based) shown elsewhere on the dashboard.
+  const totalSessions = new Set(turns.map((t) => t.sessionId)).size;
+
   const totalInputTokens = turns.reduce((sum, t) => sum + t.tokens.input, 0);
   const totalOutputTokens = turns.reduce((sum, t) => sum + t.tokens.output, 0);
   const totalCacheReadTokens = turns.reduce((sum, t) => sum + t.tokens.cacheRead, 0);

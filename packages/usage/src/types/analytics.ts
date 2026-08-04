@@ -1,3 +1,5 @@
+import type { ModelFamily } from '../models/model-catalog.js';
+
 export interface UsageWindowStats {
   totalTokens: number;
   totalCostUsd: number;
@@ -34,8 +36,14 @@ export interface UsageTrends {
   weekly: TrendPoint[];
 }
 
+/** Preset time ranges the dashboard filter offers. */
+export type RangeOption = '7d' | '30d' | '90d' | 'all';
+
 export interface ModelUsageBreakdown {
+  /** Exact model id stored in the session files, e.g. "claude-sonnet-5". */
   model: string;
+  /** Family this model belongs to (haiku/sonnet/opus/unknown) — used for consistent colors. */
+  family: ModelFamily;
   displayName: string;
   totalTokens: number;
   totalCostUsd: number;
@@ -64,6 +72,9 @@ export interface SessionSummaryRow {
   primaryModelDisplayName: string;
   inputTokens: number;
   outputTokens: number;
+  cacheReadTokens: number;
+  cacheCreationTokens: number;
+  totalTokens: number;
   totalCostUsd: number;
   title: string | null;
 }

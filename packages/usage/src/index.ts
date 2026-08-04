@@ -30,6 +30,7 @@ export type {
   InsightSeverity,
   ModelUsageBreakdown,
   ProjectUsageBreakdown,
+  RangeOption,
   SessionSummaryRow,
   TrendPoint,
   UsageSummary,
@@ -40,7 +41,7 @@ export type {
 export { resolveModel } from './models/model-catalog.js';
 export type { ModelCatalogEntry, ModelFamily } from './models/model-catalog.js';
 
-export { PRICING_TABLE } from './pricing/pricing-table.js';
+export { MODEL_PRICING_ENTRIES, PRICING_TABLE, resolvePricing } from './pricing/pricing-table.js';
 export type { ModelPricing } from './pricing/pricing-table.js';
 export { calculateCostForFamily, calculateCostForModel, calculateCostUsd } from './pricing/cost-calculator.js';
 
@@ -48,5 +49,8 @@ export { resolveTurns } from './analytics/resolved-turn.js';
 export type { ResolvedTurn } from './analytics/resolved-turn.js';
 export { UsageAnalyticsEngine } from './analytics/usage-analytics-engine.js';
 export type { UsageAnalyticsBundle } from './analytics/usage-analytics-engine.js';
+export { filterSessionsByDate, filterSessionsByRange, RANGE_DAYS } from './analytics/filter-sessions.js';
+export { DEFAULT_TREND_WINDOW } from './analytics/build-trends.js';
+export type { TrendWindow } from './analytics/build-trends.js';
 
 export { generateMockSessions } from './mock/mock-session-generator.js';

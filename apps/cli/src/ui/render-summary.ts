@@ -1,5 +1,6 @@
 import pc from 'picocolors';
 import type { AnalysisResult } from '@claude-assist/types';
+import { buildFocusPrompt } from '@claude-assist/models';
 import { formatFrameworkLabel, formatLanguageLabel, formatLinesOfCode, formatModelLabel } from './format-utils.js';
 
 function section(title: string): string {
@@ -38,6 +39,9 @@ export function renderSummary(result: AnalysisResult): string {
       .join(', ');
     lines.push(`Largest Folders: ${top}`);
   }
+  lines.push('');
+
+  lines.push(buildFocusPrompt(result.focus, result.git));
   lines.push('');
 
   lines.push(section('AI Recommendation'));

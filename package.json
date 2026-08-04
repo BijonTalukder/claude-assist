@@ -9,10 +9,10 @@
   },
   "packageManager": "pnpm@9.7.0",
   "scripts": {
-    "build": "turbo run build",
+    "build": "pnpm run clean && turbo run build",
     "dev": "turbo run dev",
     "typecheck": "turbo run typecheck",
-    "clean": "turbo run clean"
+    "clean": "turbo run clean && rm -rf apps/cli/assets/dashboard"
   },
   "devDependencies": {
     "@types/node": "^22.5.0",

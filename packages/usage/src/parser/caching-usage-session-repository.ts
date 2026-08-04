@@ -6,7 +6,8 @@ import { SessionFileParser } from './session-file-parser.js';
 
 interface CacheEntry {
   mtimeMs: number;
-  session: SessionRecord;
+  /** Null when the file contained no real token usage — cached so unchanged files stay cheap. */
+  session: SessionRecord | null;
   warnings: ParseWarning[];
 }
 
@@ -56,7 +57,7 @@ export class CachingUsageSessionRepository {
 
       const cached = this.cache.get(file.filePath);
       if (cached && cached.mtimeMs === mtimeMs) {
-        sessions.push(cached.session);
+        if (cached.session) sessions.push(cached.session);
         warnings.push(...cached.warnings);
         continue;
       }
@@ -64,7 +65,7 @@ export class CachingUsageSessionRepository {
       try {
         const outcome = await this.parser.parse(file.filePath, file.projectDirName, file.sessionId);
         this.cache.set(file.filePath, { mtimeMs, session: outcome.session, warnings: outcome.warnings });
-        sessions.push(outcome.session);
+        if (outcome.session) sessions.push(outcome.session);
         warnings.push(...outcome.warnings);
       } catch (error) {
         warnings.push({

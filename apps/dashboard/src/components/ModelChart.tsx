@@ -54,7 +54,7 @@ export function ModelChart({ models }: ModelChartProps) {
               />
               <Bar dataKey="totalTokens" radius={[0, 4, 4, 0]} maxBarSize={24} label={{ position: 'right', fill: '#898781', fontSize: 12, formatter: (value: number) => formatCompactNumber(value) }}>
                 {data.map((entry) => (
-                  <Cell key={entry.model} fill={MODEL_FAMILY_COLORS[entry.model] ?? MODEL_FAMILY_COLORS.unknown} />
+                  <Cell key={entry.model} fill={MODEL_FAMILY_COLORS[entry.family] ?? MODEL_FAMILY_COLORS.unknown} />
                 ))}
               </Bar>
             </BarChart>
