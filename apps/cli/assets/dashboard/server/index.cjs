@@ -18499,10 +18499,10 @@ var require_view = __commonJS({
     var debug = require_src()("express:view");
     var path = require("path");
     var fs = require("fs");
-    var dirname = path.dirname;
+    var dirname2 = path.dirname;
     var basename3 = path.basename;
     var extname = path.extname;
-    var join5 = path.join;
+    var join6 = path.join;
     var resolve = path.resolve;
     module2.exports = View;
     function View(name, options) {
@@ -18538,7 +18538,7 @@ var require_view = __commonJS({
       for (var i = 0; i < roots.length && !path2; i++) {
         var root = roots[i];
         var loc = resolve(root, name);
-        var dir = dirname(loc);
+        var dir = dirname2(loc);
         var file = basename3(loc);
         path2 = this.resolve(dir, file);
       }
@@ -18550,14 +18550,14 @@ var require_view = __commonJS({
     };
     View.prototype.resolve = function resolve2(dir, file) {
       var ext = this.ext;
-      var path2 = join5(dir, file);
-      var stat2 = tryStat(path2);
-      if (stat2 && stat2.isFile()) {
+      var path2 = join6(dir, file);
+      var stat3 = tryStat(path2);
+      if (stat3 && stat3.isFile()) {
         return path2;
       }
-      path2 = join5(dir, basename3(file, ext), "index" + ext);
-      stat2 = tryStat(path2);
-      if (stat2 && stat2.isFile()) {
+      path2 = join6(dir, basename3(file, ext), "index" + ext);
+      stat3 = tryStat(path2);
+      if (stat3 && stat3.isFile()) {
         return path2;
       }
     };
@@ -18828,9 +18828,9 @@ var require_etag = __commonJS({
       }
       return obj && typeof obj === "object" && "ctime" in obj && toString.call(obj.ctime) === "[object Date]" && "mtime" in obj && toString.call(obj.mtime) === "[object Date]" && "ino" in obj && typeof obj.ino === "number" && "size" in obj && typeof obj.size === "number";
     }
-    function stattag(stat2) {
-      var mtime = stat2.mtime.getTime().toString(16);
-      var size = stat2.size.toString(16);
+    function stattag(stat3) {
+      var mtime = stat3.mtime.getTime().toString(16);
+      var size = stat3.size.toString(16);
       return '"' + size + "-" + mtime + '"';
     }
   }
@@ -19191,10 +19191,10 @@ var require_send = __commonJS({
     var Stream = require("stream");
     var util = require("util");
     var extname = path.extname;
-    var join5 = path.join;
+    var join6 = path.join;
     var normalize = path.normalize;
     var resolve = path.resolve;
-    var sep = path.sep;
+    var sep2 = path.sep;
     var BYTES_RANGE_REGEXP = /^ *bytes=/;
     var MAX_MAXAGE = 60 * 60 * 24 * 365 * 1e3;
     var UP_PATH_REGEXP = /(?:^|[\\/])\.\.(?:[\\/]|$)/;
@@ -19402,22 +19402,22 @@ var require_send = __commonJS({
       var parts;
       if (root !== null) {
         if (path2) {
-          path2 = normalize("." + sep + path2);
+          path2 = normalize("." + sep2 + path2);
         }
         if (UP_PATH_REGEXP.test(path2)) {
           debug('malicious path "%s"', path2);
           this.error(403);
           return res;
         }
-        parts = path2.split(sep);
-        path2 = normalize(join5(root, path2));
+        parts = path2.split(sep2);
+        path2 = normalize(join6(root, path2));
       } else {
         if (UP_PATH_REGEXP.test(path2)) {
           debug('malicious path "%s"', path2);
           this.error(403);
           return res;
         }
-        parts = normalize(path2).split(sep);
+        parts = normalize(path2).split(sep2);
         path2 = resolve(path2);
       }
       if (containsDotFile(parts)) {
@@ -19445,8 +19445,8 @@ var require_send = __commonJS({
       this.sendFile(path2);
       return res;
     };
-    SendStream.prototype.send = function send2(path2, stat2) {
-      var len = stat2.size;
+    SendStream.prototype.send = function send2(path2, stat3) {
+      var len = stat3.size;
       var options = this.options;
       var opts = {};
       var res = this.res;
@@ -19458,7 +19458,7 @@ var require_send = __commonJS({
         return;
       }
       debug('pipe "%s"', path2);
-      this.setHeader(path2, stat2);
+      this.setHeader(path2, stat3);
       this.type(path2);
       if (this.isConditionalGET()) {
         if (this.isPreconditionFailure()) {
@@ -19514,14 +19514,14 @@ var require_send = __commonJS({
       var i = 0;
       var self = this;
       debug('stat "%s"', path2);
-      fs.stat(path2, function onstat(err, stat2) {
-        if (err && err.code === "ENOENT" && !extname(path2) && path2[path2.length - 1] !== sep) {
+      fs.stat(path2, function onstat(err, stat3) {
+        if (err && err.code === "ENOENT" && !extname(path2) && path2[path2.length - 1] !== sep2) {
           return next(err);
         }
         if (err) return self.onStatError(err);
-        if (stat2.isDirectory()) return self.redirect(path2);
-        self.emit("file", path2, stat2);
-        self.send(path2, stat2);
+        if (stat3.isDirectory()) return self.redirect(path2);
+        self.emit("file", path2, stat3);
+        self.send(path2, stat3);
       });
       function next(err) {
         if (self._extensions.length <= i) {
@@ -19529,11 +19529,11 @@ var require_send = __commonJS({
         }
         var p = path2 + "." + self._extensions[i++];
         debug('stat "%s"', p);
-        fs.stat(p, function(err2, stat2) {
+        fs.stat(p, function(err2, stat3) {
           if (err2) return next(err2);
-          if (stat2.isDirectory()) return next();
-          self.emit("file", p, stat2);
-          self.send(p, stat2);
+          if (stat3.isDirectory()) return next();
+          self.emit("file", p, stat3);
+          self.send(p, stat3);
         });
       }
     };
@@ -19545,13 +19545,13 @@ var require_send = __commonJS({
           if (err) return self.onStatError(err);
           return self.error(404);
         }
-        var p = join5(path2, self._index[i]);
+        var p = join6(path2, self._index[i]);
         debug('stat "%s"', p);
-        fs.stat(p, function(err2, stat2) {
+        fs.stat(p, function(err2, stat3) {
           if (err2) return next(err2);
-          if (stat2.isDirectory()) return next();
-          self.emit("file", p, stat2);
-          self.send(p, stat2);
+          if (stat3.isDirectory()) return next();
+          self.emit("file", p, stat3);
+          self.send(p, stat3);
         });
       }
       next();
@@ -19586,9 +19586,9 @@ var require_send = __commonJS({
       debug("content-type %s", type2);
       res.setHeader("Content-Type", type2 + (charset ? "; charset=" + charset : ""));
     };
-    SendStream.prototype.setHeader = function setHeader(path2, stat2) {
+    SendStream.prototype.setHeader = function setHeader(path2, stat3) {
       var res = this.res;
-      this.emit("headers", res, path2, stat2);
+      this.emit("headers", res, path2, stat3);
       if (this._acceptRanges && !res.getHeader("Accept-Ranges")) {
         debug("accept ranges");
         res.setHeader("Accept-Ranges", "bytes");
@@ -19602,12 +19602,12 @@ var require_send = __commonJS({
         res.setHeader("Cache-Control", cacheControl);
       }
       if (this._lastModified && !res.getHeader("Last-Modified")) {
-        var modified = stat2.mtime.toUTCString();
+        var modified = stat3.mtime.toUTCString();
         debug("modified %s", modified);
         res.setHeader("Last-Modified", modified);
       }
       if (this._etag && !res.getHeader("ETag")) {
-        var val = etag(stat2);
+        var val = etag(stat3);
         debug("etag %s", val);
         res.setHeader("ETag", val);
       }
@@ -22686,45 +22686,11 @@ var require_express2 = __commonJS({
 
 // server/app.ts
 var import_express2 = __toESM(require_express2(), 1);
-var import_node_fs3 = require("fs");
-var import_node_path6 = require("path");
+var import_node_fs4 = require("fs");
+var import_node_path9 = require("path");
 
 // server/routes/usage-routes.ts
 var import_express = __toESM(require_express2(), 1);
-function withMeta(snapshot) {
-  return { range: snapshot.range, claudeInstalled: snapshot.claudeInstalled, isMockData: snapshot.isMockData, generatedAt: snapshot.generatedAt };
-}
-var RANGES = ["7d", "30d", "90d", "all"];
-function parseRange(req) {
-  const raw = req.query.range;
-  const value = Array.isArray(raw) ? raw[0] : raw;
-  return typeof value === "string" && RANGES.includes(value) ? value : "all";
-}
-function createUsageRouter(service) {
-  const router = (0, import_express.Router)();
-  const endpoint = (slice) => async (req, res, next) => {
-    try {
-      const snapshot = await service.getSnapshot({ range: parseRange(req) });
-      res.json({ ...slice(snapshot), ...withMeta(snapshot) });
-    } catch (error) {
-      next(error);
-    }
-  };
-  router.get("/summary", endpoint((s) => ({ summary: s.summary })));
-  router.get("/trends", endpoint((s) => ({ trends: s.trends })));
-  router.get("/models", endpoint((s) => ({ models: s.models })));
-  router.get("/projects", endpoint((s) => ({ projects: s.projects })));
-  router.get("/sessions", endpoint((s) => ({ sessions: s.sessions })));
-  router.get("/insights", endpoint((s) => ({ insights: s.insights })));
-  router.get("/status", async (_req, res, next) => {
-    try {
-      res.json(await service.getStatus());
-    } catch (error) {
-      next(error);
-    }
-  });
-  return router;
-}
 
 // ../../packages/usage/dist/utils/claude-home.js
 var import_node_os2 = require("os");
@@ -22853,7 +22819,10 @@ var SessionFileParser = class {
     let cliVersion = null;
     let firstTimestamp = null;
     let lastTimestamp = null;
-    const rl = (0, import_node_readline.createInterface)({ input: (0, import_node_fs2.createReadStream)(filePath, { encoding: "utf8" }), crlfDelay: Infinity });
+    const rl = (0, import_node_readline.createInterface)({
+      input: (0, import_node_fs2.createReadStream)(filePath, { encoding: "utf8" }),
+      crlfDelay: Infinity
+    });
     let lineNumber = 0;
     for await (const rawLine of rl) {
       lineNumber += 1;
@@ -22864,7 +22833,11 @@ var SessionFileParser = class {
       try {
         event = JSON.parse(line);
       } catch {
-        warnings.push({ file: filePath, line: lineNumber, message: "Skipped a line that was not valid JSON." });
+        warnings.push({
+          file: filePath,
+          line: lineNumber,
+          message: "Skipped a line that was not valid JSON."
+        });
         continue;
       }
       if (event.sessionId)
@@ -22909,7 +22882,8 @@ var SessionFileParser = class {
         });
       }
     }
-    const session = {
+    const hasRealUsage = turns.some((turn) => turn.tokens.input > 0 || turn.tokens.output > 0 || turn.tokens.cacheRead > 0 || turn.tokens.cacheCreation > 0);
+    const session = hasRealUsage ? {
       sessionId,
       projectPath: projectPath ?? "unknown",
       projectDirName,
@@ -22920,7 +22894,7 @@ var SessionFileParser = class {
       turns,
       turnDurations,
       sourceFile: filePath
-    };
+    } : null;
     return { session, warnings };
   }
 };
@@ -22959,14 +22933,16 @@ var CachingUsageSessionRepository = class {
       }
       const cached = this.cache.get(file.filePath);
       if (cached && cached.mtimeMs === mtimeMs) {
-        sessions.push(cached.session);
+        if (cached.session)
+          sessions.push(cached.session);
         warnings.push(...cached.warnings);
         continue;
       }
       try {
         const outcome = await this.parser.parse(file.filePath, file.projectDirName, file.sessionId);
         this.cache.set(file.filePath, { mtimeMs, session: outcome.session, warnings: outcome.warnings });
-        sessions.push(outcome.session);
+        if (outcome.session)
+          sessions.push(outcome.session);
         warnings.push(...outcome.warnings);
       } catch (error) {
         warnings.push({
@@ -23177,10 +23153,57 @@ function calculateCostForFamily(family, tokens) {
   return calculateCostUsd(tokens, PRICING_TABLE[family]);
 }
 
-// ../../packages/usage/dist/analytics/resolved-turn.js
+// ../../packages/usage/dist/analytics/build-session-rows.js
 var import_node_path4 = require("path");
+function buildSessionRows(sessions, turns) {
+  const turnsBySessionId = /* @__PURE__ */ new Map();
+  for (const turn of turns) {
+    const list = turnsBySessionId.get(turn.sessionId) ?? [];
+    list.push(turn);
+    turnsBySessionId.set(turn.sessionId, list);
+  }
+  return sessions.map((session) => {
+    const sessionTurns = turnsBySessionId.get(session.sessionId) ?? [];
+    const tokensByModel = /* @__PURE__ */ new Map();
+    let inputTokens = 0;
+    let outputTokens = 0;
+    let cacheReadTokens = 0;
+    let cacheCreationTokens = 0;
+    let totalTokens = 0;
+    let totalCostUsd = 0;
+    for (const turn of sessionTurns) {
+      inputTokens += turn.tokens.input;
+      outputTokens += turn.tokens.output;
+      cacheReadTokens += turn.tokens.cacheRead;
+      cacheCreationTokens += turn.tokens.cacheCreation;
+      totalTokens += turn.totalTokens;
+      totalCostUsd += turn.costUsd;
+      tokensByModel.set(turn.model, (tokensByModel.get(turn.model) ?? 0) + turn.totalTokens);
+    }
+    const primaryModel = Array.from(tokensByModel.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "unknown";
+    const projectName = (0, import_node_path4.basename)(session.projectPath) || session.projectPath;
+    return {
+      sessionId: session.sessionId,
+      date: session.firstTimestamp ?? session.lastTimestamp ?? "",
+      projectName,
+      projectPath: session.projectPath,
+      primaryModel,
+      primaryModelDisplayName: resolveModel(primaryModel).displayName,
+      inputTokens,
+      outputTokens,
+      cacheReadTokens,
+      cacheCreationTokens,
+      totalTokens,
+      totalCostUsd,
+      title: session.title
+    };
+  });
+}
+
+// ../../packages/usage/dist/analytics/resolved-turn.js
+var import_node_path5 = require("path");
 function toProjectName(projectPath) {
-  const name = (0, import_node_path4.basename)(projectPath);
+  const name = (0, import_node_path5.basename)(projectPath);
   return name.length > 0 ? name : projectPath;
 }
 function resolveTurns(sessions) {
@@ -23408,53 +23431,6 @@ function buildProjectBreakdown(turns) {
   })).sort((a, b) => b.totalTokens - a.totalTokens);
 }
 
-// ../../packages/usage/dist/analytics/build-session-rows.js
-var import_node_path5 = require("path");
-function buildSessionRows(sessions, turns) {
-  const turnsBySessionId = /* @__PURE__ */ new Map();
-  for (const turn of turns) {
-    const list = turnsBySessionId.get(turn.sessionId) ?? [];
-    list.push(turn);
-    turnsBySessionId.set(turn.sessionId, list);
-  }
-  return sessions.map((session) => {
-    const sessionTurns = turnsBySessionId.get(session.sessionId) ?? [];
-    const tokensByModel = /* @__PURE__ */ new Map();
-    let inputTokens = 0;
-    let outputTokens = 0;
-    let cacheReadTokens = 0;
-    let cacheCreationTokens = 0;
-    let totalTokens = 0;
-    let totalCostUsd = 0;
-    for (const turn of sessionTurns) {
-      inputTokens += turn.tokens.input;
-      outputTokens += turn.tokens.output;
-      cacheReadTokens += turn.tokens.cacheRead;
-      cacheCreationTokens += turn.tokens.cacheCreation;
-      totalTokens += turn.totalTokens;
-      totalCostUsd += turn.costUsd;
-      tokensByModel.set(turn.model, (tokensByModel.get(turn.model) ?? 0) + turn.totalTokens);
-    }
-    const primaryModel = Array.from(tokensByModel.entries()).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "unknown";
-    const projectName = (0, import_node_path5.basename)(session.projectPath) || session.projectPath;
-    return {
-      sessionId: session.sessionId,
-      date: session.firstTimestamp ?? session.lastTimestamp ?? "",
-      projectName,
-      projectPath: session.projectPath,
-      primaryModel,
-      primaryModelDisplayName: resolveModel(primaryModel).displayName,
-      inputTokens,
-      outputTokens,
-      cacheReadTokens,
-      cacheCreationTokens,
-      totalTokens,
-      totalCostUsd,
-      title: session.title
-    };
-  });
-}
-
 // ../../packages/usage/dist/analytics/insights-generator.js
 var DOMINANT_MODEL_SHARE_THRESHOLD = 0.5;
 var DOMINANT_PROJECT_SHARE_THRESHOLD = 0.4;
@@ -23666,16 +23642,146 @@ function generateMockSessions(now = /* @__PURE__ */ new Date()) {
   return sessions;
 }
 
+// server/config.ts
+var import_node_os3 = require("os");
+var import_node_path6 = require("path");
+var DASHBOARD_PORT = Number(process.env.DASHBOARD_PORT ?? 4500);
+var STATE_DIR = process.env.CLAUDE_ASSIST_STATE_DIR ?? (0, import_node_path6.join)((0, import_node_os3.homedir)(), ".claude-assist");
+var HIDDEN_SESSIONS_FILE = (0, import_node_path6.join)(STATE_DIR, "hidden-sessions.json");
+
+// server/hidden-session-store.ts
+var import_node_fs3 = require("fs");
+var import_node_path7 = require("path");
+var HiddenSessionStore = class {
+  constructor(filePath) {
+    this.filePath = filePath;
+  }
+  filePath;
+  ids = null;
+  list() {
+    return [...this.load()];
+  }
+  has(sessionId) {
+    return this.load().has(sessionId);
+  }
+  hide(sessionId) {
+    const ids = this.load();
+    if (ids.has(sessionId)) return;
+    ids.add(sessionId);
+    this.persist(ids);
+  }
+  unhide(sessionId) {
+    const ids = this.load();
+    if (!ids.delete(sessionId)) return;
+    this.persist(ids);
+  }
+  /**
+   * Drops a session from the hidden list without rewriting it back in. Called after a
+   * hard delete so a hidden-then-deleted session doesn't leave a dangling id behind.
+   */
+  forget(sessionId) {
+    this.unhide(sessionId);
+  }
+  load() {
+    if (this.ids) return this.ids;
+    try {
+      const parsed = JSON.parse((0, import_node_fs3.readFileSync)(this.filePath, "utf8"));
+      const ids = Array.isArray(parsed?.hiddenSessionIds) ? parsed.hiddenSessionIds : [];
+      this.ids = new Set(ids.filter((id) => typeof id === "string"));
+    } catch {
+      this.ids = /* @__PURE__ */ new Set();
+    }
+    return this.ids;
+  }
+  persist(ids) {
+    (0, import_node_fs3.mkdirSync)((0, import_node_path7.dirname)(this.filePath), { recursive: true });
+    const payload = { hiddenSessionIds: [...ids] };
+    (0, import_node_fs3.writeFileSync)(this.filePath, `${JSON.stringify(payload, null, 2)}
+`, "utf8");
+  }
+};
+
+// server/delete-session-file.ts
+var import_promises3 = require("fs/promises");
+var import_node_path8 = require("path");
+var SessionDeleteError = class extends Error {
+  constructor(reason, message) {
+    super(message);
+    this.reason = reason;
+    this.name = "SessionDeleteError";
+  }
+  reason;
+};
+var ACTIVE_SESSION_WINDOW_MS = 6e4;
+function isInside(child, parent) {
+  const parentWithSep = parent.endsWith(import_node_path8.sep) ? parent : `${parent}${import_node_path8.sep}`;
+  return child.startsWith(parentWithSep);
+}
+async function deleteSessionFile(sourceFile, claudeProjectsDir, options = {}) {
+  const now = options.now ?? Date.now();
+  let resolvedFile;
+  let resolvedRoot;
+  try {
+    resolvedFile = await (0, import_promises3.realpath)(sourceFile);
+  } catch {
+    throw new SessionDeleteError("not-found", "Session transcript no longer exists on disk.");
+  }
+  try {
+    resolvedRoot = await (0, import_promises3.realpath)(claudeProjectsDir);
+  } catch {
+    throw new SessionDeleteError("outside-claude-directory", "Claude Code's projects directory could not be resolved.");
+  }
+  if (!isInside(resolvedFile, resolvedRoot)) {
+    throw new SessionDeleteError(
+      "outside-claude-directory",
+      "Refusing to delete a file outside Claude Code's projects directory."
+    );
+  }
+  if (!options.force) {
+    const { mtimeMs } = await (0, import_promises3.stat)(resolvedFile);
+    if (now - mtimeMs < ACTIVE_SESSION_WINDOW_MS) {
+      throw new SessionDeleteError(
+        "session-active",
+        "This session was active in the last minute and may still be open in Claude Code."
+      );
+    }
+  }
+  try {
+    await (0, import_promises3.unlink)(resolvedFile);
+  } catch (error) {
+    const code = error.code;
+    if (code === "ENOENT") {
+      throw new SessionDeleteError("not-found", "Session transcript no longer exists on disk.");
+    }
+    if (code === "EBUSY" || code === "EPERM" || code === "EACCES") {
+      throw new SessionDeleteError("file-in-use", "The transcript file is locked by another process.");
+    }
+    throw error;
+  }
+}
+
 // server/usage-analytics-service.ts
+var SessionMutationError = class extends Error {
+  constructor(reason, message) {
+    super(message);
+    this.reason = reason;
+    this.name = "SessionMutationError";
+  }
+  reason;
+};
 var UsageAnalyticsService = class {
-  constructor(repository = new CachingUsageSessionRepository(), engine = new UsageAnalyticsEngine(), directoryResolver = new ClaudeDirectoryResolver()) {
+  constructor(repository = new CachingUsageSessionRepository(), engine = new UsageAnalyticsEngine(), directoryResolver = new ClaudeDirectoryResolver(), hiddenSessions = new HiddenSessionStore(HIDDEN_SESSIONS_FILE), homeLocator = new ClaudeHomeLocator()) {
     this.repository = repository;
     this.engine = engine;
     this.directoryResolver = directoryResolver;
+    this.hiddenSessions = hiddenSessions;
+    this.homeLocator = homeLocator;
   }
   repository;
   engine;
   directoryResolver;
+  hiddenSessions;
+  homeLocator;
   lastLoadResult = null;
   /** `date`, when given, is a UTC calendar day ("YYYY-MM-DD") — see filterSessionsByDate. */
   async getSnapshot(options = {}) {
@@ -23692,11 +23798,15 @@ var UsageAnalyticsService = class {
       isMockData = !(result.historyFound && result.sessions.length > 0);
       sourceSessions = isMockData ? generateMockSessions(now) : result.sessions;
     }
+    const hiddenIds = isMockData ? /* @__PURE__ */ new Set() : new Set(this.hiddenSessions.list());
+    const visibleSessions = hiddenIds.size === 0 ? sourceSessions : sourceSessions.filter((s) => !hiddenIds.has(s.sessionId));
     const range = options.range ?? "all";
-    const filtered = options.date ? filterSessionsByDate(sourceSessions, options.date) : filterSessionsByRange(sourceSessions, range, now);
+    const applyFilters = (sessions2) => options.date ? filterSessionsByDate(sessions2, options.date) : filterSessionsByRange(sessions2, range, now);
+    const filtered = applyFilters(visibleSessions);
     const trendWindow = trendWindowForRange(range);
     const bundle = this.engine.buildAll(filtered, now, trendWindow);
-    return { ...bundle, range, claudeInstalled, isMockData, generatedAt: now.toISOString() };
+    const sessions = options.includeHidden && hiddenIds.size > 0 ? [...bundle.sessions, ...this.buildHiddenRows(applyFilters(sourceSessions.filter((s) => hiddenIds.has(s.sessionId))))] : bundle.sessions;
+    return { ...bundle, sessions, range, claudeInstalled, isMockData, generatedAt: now.toISOString() };
   }
   async getStatus() {
     const resolution = this.directoryResolver.resolve();
@@ -23707,8 +23817,54 @@ var UsageAnalyticsService = class {
       directory: resolution.directory,
       lastScanAt: result.lastScanAt,
       totalFilesScanned: result.totalFilesScanned,
-      totalSessionsParsed: result.sessions.length
+      totalSessionsParsed: result.sessions.length,
+      hiddenSessions: this.hiddenSessions.list().length
     };
+  }
+  /** Reversible: drops the session from analytics without touching its transcript. */
+  async hideSession(sessionId) {
+    await this.requireRealSession(sessionId);
+    this.hiddenSessions.hide(sessionId);
+  }
+  async unhideSession(sessionId) {
+    this.hiddenSessions.unhide(sessionId);
+  }
+  /**
+   * Permanently deletes the session's transcript from Claude Code's own data directory.
+   * This is not reversible and the session stops being resumable in Claude Code.
+   */
+  async deleteSession(sessionId, options = {}) {
+    const record = await this.requireRealSession(sessionId);
+    try {
+      await deleteSessionFile(record.sourceFile, this.homeLocator.resolveProjectsDir(), { force: options.force });
+    } catch (error) {
+      if (error instanceof SessionDeleteError) {
+        throw new SessionMutationError(error.reason, error.message);
+      }
+      throw error;
+    }
+    this.hiddenSessions.forget(sessionId);
+    this.lastLoadResult = null;
+  }
+  /**
+   * Resolves a session id against what the repository actually parsed. Mutations only
+   * ever act on records found this way — a client-supplied path is never trusted.
+   */
+  async requireRealSession(sessionId) {
+    const result = await this.repository.loadAll();
+    this.lastLoadResult = result;
+    if (!(result.historyFound && result.sessions.length > 0)) {
+      throw new SessionMutationError("mock-data", "There is no local Claude Code history to modify.");
+    }
+    const record = result.sessions.find((session) => session.sessionId === sessionId);
+    if (!record) {
+      throw new SessionMutationError("not-found", `No session found with id ${sessionId}.`);
+    }
+    return record;
+  }
+  buildHiddenRows(sessions) {
+    if (sessions.length === 0) return [];
+    return buildSessionRows(sessions, resolveTurns(sessions)).map((row) => ({ ...row, hidden: true }));
   }
 };
 function trendWindowForRange(range) {
@@ -23722,6 +23878,82 @@ function trendWindowForRange(range) {
   };
 }
 
+// server/routes/usage-routes.ts
+function withMeta(snapshot) {
+  return { range: snapshot.range, claudeInstalled: snapshot.claudeInstalled, isMockData: snapshot.isMockData, generatedAt: snapshot.generatedAt };
+}
+var RANGES = ["7d", "30d", "90d", "all"];
+function parseRange(req) {
+  const raw = req.query.range;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return typeof value === "string" && RANGES.includes(value) ? value : "all";
+}
+function parseFlag(req, name) {
+  const raw = req.query[name];
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  return value === "1" || value === "true";
+}
+var MUTATION_STATUS = {
+  "not-found": 404,
+  "mock-data": 409,
+  "session-active": 409,
+  "file-in-use": 409,
+  "outside-claude-directory": 403
+};
+function sendMutationError(res, error) {
+  res.status(MUTATION_STATUS[error.reason]).json({ error: error.message, reason: error.reason });
+}
+var mutation = (handler) => async (req, res, next) => {
+  try {
+    await handler(req);
+    res.status(204).end();
+  } catch (error) {
+    if (error instanceof SessionMutationError) {
+      sendMutationError(res, error);
+      return;
+    }
+    next(error);
+  }
+};
+function createUsageRouter(service) {
+  const router = (0, import_express.Router)();
+  const endpoint = (slice) => async (req, res, next) => {
+    try {
+      const snapshot = await service.getSnapshot({ range: parseRange(req) });
+      res.json({ ...slice(snapshot), ...withMeta(snapshot) });
+    } catch (error) {
+      next(error);
+    }
+  };
+  router.get("/summary", endpoint((s) => ({ summary: s.summary })));
+  router.get("/trends", endpoint((s) => ({ trends: s.trends })));
+  router.get("/models", endpoint((s) => ({ models: s.models })));
+  router.get("/projects", endpoint((s) => ({ projects: s.projects })));
+  router.get("/insights", endpoint((s) => ({ insights: s.insights })));
+  router.get("/sessions", async (req, res, next) => {
+    try {
+      const snapshot = await service.getSnapshot({ range: parseRange(req), includeHidden: parseFlag(req, "includeHidden") });
+      res.json({ sessions: snapshot.sessions, ...withMeta(snapshot) });
+    } catch (error) {
+      next(error);
+    }
+  });
+  router.post("/sessions/:sessionId/hide", mutation((req) => service.hideSession(req.params.sessionId)));
+  router.delete("/sessions/:sessionId/hide", mutation((req) => service.unhideSession(req.params.sessionId)));
+  router.delete(
+    "/sessions/:sessionId",
+    mutation((req) => service.deleteSession(req.params.sessionId, { force: parseFlag(req, "force") }))
+  );
+  router.get("/status", async (_req, res, next) => {
+    try {
+      res.json(await service.getStatus());
+    } catch (error) {
+      next(error);
+    }
+  });
+  return router;
+}
+
 // server/app.ts
 var currentDir = typeof __dirname === "string" ? __dirname : process.cwd();
 function createApp() {
@@ -23731,11 +23963,11 @@ function createApp() {
   app2.use("/api", (_req, res) => {
     res.status(404).json({ error: "Not found" });
   });
-  const clientDistDir = (0, import_node_path6.join)(currentDir, "..", "client");
-  if ((0, import_node_fs3.existsSync)(clientDistDir)) {
+  const clientDistDir = (0, import_node_path9.join)(currentDir, "..", "client");
+  if ((0, import_node_fs4.existsSync)(clientDistDir)) {
     app2.use(import_express2.default.static(clientDistDir));
     app2.get("*", (_req, res) => {
-      res.sendFile((0, import_node_path6.join)(clientDistDir, "index.html"));
+      res.sendFile((0, import_node_path9.join)(clientDistDir, "index.html"));
     });
   }
   app2.use((err, _req, res, _next) => {
@@ -23744,9 +23976,6 @@ function createApp() {
   });
   return app2;
 }
-
-// server/config.ts
-var DASHBOARD_PORT = Number(process.env.DASHBOARD_PORT ?? 4500);
 
 // server/index.ts
 var app = createApp();

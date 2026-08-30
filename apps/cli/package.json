@@ -1,6 +1,6 @@
 {
   "name": "claude-assist",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "Analyzes your project and launches Claude Code with a useful pre-flight summary.",
   "keywords": [
     "claude",
@@ -31,6 +31,19 @@
     "open-source"
   ],
   "license": "MIT",
+  "author": "Bijon Talukder <bijontalukder1247@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BijonTalukder/claude-assist.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://github.com/BijonTalukder/claude-assist#readme",
+  "bugs": {
+    "url": "https://github.com/BijonTalukder/claude-assist/issues"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "exports": {
@@ -42,7 +55,8 @@
   "preferGlobal": true,
   "files": [
     "dist",
-    "assets"
+    "assets",
+    "CHANGELOG.md"
   ],
   "scripts": {
     "build": "pnpm run clean && pnpm --filter @claude-assist/types build && pnpm --filter @claude-assist/scanner build && pnpm --filter @claude-assist/git build && pnpm --filter @claude-assist/models build && pnpm --filter @claude-assist/core build && pnpm --filter @claude-assist/usage build && pnpm --filter @claude-assist/dashboard build && node ./scripts/copy-dashboard-assets.mjs && tsup",

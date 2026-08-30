@@ -63,6 +63,12 @@ const MONOREPO_PATTERNS = [
 ];
 
 /**
+ * Secret-bearing env files, excluded for every language. Committed templates are
+ * negated back in so the documented variable names stay visible.
+ */
+const SECRET_PATTERNS = ['.env', '.env.*', '!.env.example', '!.env.sample'];
+
+/**
  * Builds a language-aware `.claudeignore` from a template. Never overwrites: the
  * caller only writes this content when no `.claudeignore` exists yet. The list is a
  * template, not a strict reflection of what's on disk, so it keeps ignoring the
@@ -85,6 +91,8 @@ export function buildClaudeIgnoreContent(language: Language, isMonorepo: boolean
     // Unknown language — a conservative baseline.
     lines.push('# Dependency & build folders', 'node_modules', 'dist', 'build', 'coverage', '');
   }
+
+  lines.push('# Secrets', ...SECRET_PATTERNS, '');
 
   return lines.join('\n');
 }

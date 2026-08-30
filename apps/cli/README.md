@@ -16,10 +16,11 @@ Everything runs locally. No network calls, no AI APIs, no data leaves your machi
 - **Model recommendation** — picks Haiku, Sonnet, or Opus from project size, framework complexity, and change volume
 - **Focus area detection** — determines where Claude's attention should go (user-selected scope, current working directory, git-changed directories, or monorepo workspace) and never guesses module names
 - **Context optimizations** — suggests ignoring `node_modules` and build output, generating a `.claudeignore`, scoping a monorepo session to one package, and seeding only git-changed files
-- **`.claudeignore` generation** — language-aware ignore templates; never overwrites an existing file
+- **`.claudeignore` generation** — language-aware ignore templates that also exclude `.env` secrets (keeping `.env.example` readable); never overwrites an existing file
 - **Prompt context generation** — renders a "Project Focus" block (working directory, git changes, recommended scope) and seeds it into the Claude session via `--append-system-prompt`
 - **Claude Code launcher** — spawns `claude` directly, forwards extra arguments, and applies the detected focus
 - **Usage analytics & dashboard** — a local web dashboard for tokens, cost, models, projects, and sessions, computed entirely from `~/.claude`, with a per-model pricing table
+- **Session management** — hide a session from your analytics (reversible), or permanently delete its transcript from disk
 
 ## Installation
 
@@ -123,6 +124,22 @@ Starts the local dashboard server and opens it in your browser. It reads only `~
 Dashboard running at http://localhost:4500
 Press Ctrl+C to stop the dashboard.
 ```
+
+#### Managing sessions
+
+The Sessions page can hide or delete individual sessions.
+
+**Hide** removes a session from every analytics view — summary, trends, models, projects —
+without touching anything on disk. It is fully reversible: the "Show hidden sessions" toggle
+lists hidden rows again so they can be restored. Hidden ids are stored in
+`~/.claude-assist/hidden-sessions.json`; set `CLAUDE_ASSIST_STATE_DIR` to keep that file
+elsewhere.
+
+**Delete** is permanent. It removes the session's `.jsonl` transcript from Claude Code's own
+data directory, so the session is gone from Claude Code too and can no longer be resumed. It
+requires an explicit second confirmation, and a session that was active in the last minute is
+refused unless you confirm again — deleting a transcript Claude Code still has open leaves
+the running session in a broken state.
 
 ### Flags
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 export const DEFAULT_REFRESH_INTERVAL_MS = Number(import.meta.env.VITE_REFRESH_INTERVAL ?? 2000);
 
@@ -7,6 +7,8 @@ export interface UseUsageAnalyticsResult<T> {
   error: Error | null;
   isLoading: boolean;
   lastUpdated: Date | null;
+  /** Fetches immediately instead of waiting for the next poll — for use after a mutation. */
+  refetch: () => void;
 }
 
 /**
@@ -22,6 +24,11 @@ export function useUsageAnalytics<T>(
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [refetchToken, setRefetchToken] = useState(0);
+
+  // Bumping the token re-runs the effect, which fetches once immediately and restarts the
+  // interval — so a mutation shows its result now rather than up to `intervalMs` later.
+  const refetch = useCallback(() => setRefetchToken((token) => token + 1), []);
 
   // Callers pass a fresh arrow function on every render; capturing it in a ref (rather
   // than the effect's dependency array) means the interval isn't torn down and
@@ -54,7 +61,7 @@ export function useUsageAnalytics<T>(
       cancelled = true;
       clearInterval(interval);
     };
-  }, [intervalMs]);
+  }, [intervalMs, refetchToken]);
 
-  return { data, error, isLoading, lastUpdated };
+  return { data, error, isLoading, lastUpdated, refetch };
 }

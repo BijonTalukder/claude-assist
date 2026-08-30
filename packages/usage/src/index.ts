@@ -45,6 +45,7 @@ export { MODEL_PRICING_ENTRIES, PRICING_TABLE, resolvePricing } from './pricing/
 export type { ModelPricing } from './pricing/pricing-table.js';
 export { calculateCostForFamily, calculateCostForModel, calculateCostUsd } from './pricing/cost-calculator.js';
 
+export { buildSessionRows } from './analytics/build-session-rows.js';
 export { resolveTurns } from './analytics/resolved-turn.js';
 export type { ResolvedTurn } from './analytics/resolved-turn.js';
 export { UsageAnalyticsEngine } from './analytics/usage-analytics-engine.js';

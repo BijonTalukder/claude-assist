@@ -77,6 +77,8 @@ export interface SessionSummaryRow {
   totalTokens: number;
   totalCostUsd: number;
   title: string | null;
+  /** True when the user hid this session from the dashboard. Hidden rows are excluded from every other analytics view. */
+  hidden?: boolean;
 }
 
 export type InsightSeverity = 'info' | 'tip' | 'warning';
